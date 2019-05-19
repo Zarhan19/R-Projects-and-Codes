@@ -1,0 +1,30 @@
+require(reshape2)
+require(dplyr)
+require(googleVis)
+
+install.packages("reshape2")
+install.packages("dplyr")
+install.packages("googleVis")
+
+
+setwd ("D:/DATA/R")
+
+dc<- read.csv("SankeyChart_Data.csv")
+summary(dc)
+head(dc)
+
+nodeOrder=unique(c(rbind(dc$From, dc$To)))
+
+colormapl=c(E='#ffcc00',N='green',S='blue',W='red')
+nodeColor=unname(colormapl[substring(nodeOrder, 1, 1)])
+
+colors_node_array = paste0("[", paste0("'", nodeColor,"'", collapse = ','), "]")
+
+
+Sankeydc <- gvisSankey(dc, from="From", to="To", weight="Lines",
+                    options=list(height=1000, width=1500, 
+                        sankey="{ link: { colorMode: 'source' },},
+                            node: { colors: ", colors_node_array ,"  },
+                            label: { color: 'black' } }}"))
+
+plot(Sankeydc)
